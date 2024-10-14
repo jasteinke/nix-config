@@ -1,0 +1,9 @@
+keys:
+  - &admin_jordan age1hsy5ds2r4h75afnu49dmfkaq0ff2fnkjlaj6hlzjapj20y8esccs9nuvqd
+  - &server_alpha age16ws0qn3p7dcn5v7x20dj3nxs0yl60x09dm0vwh9kgu4qah543u0spf0rta
+creation_rules:
+  - path_regex: secrets/(.+/)?[^/]+\.[^.]+$
+    key_groups:
+      - age:
+        - *admin_jordan
+        - *server_alpha
