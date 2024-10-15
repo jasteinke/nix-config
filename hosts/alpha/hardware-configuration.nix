@@ -13,6 +13,21 @@
   boot.kernelModules = [ "kvm-intel" ];
   boot.extraModulePackages = [ ];
 
+  zramSwap = {
+    enable = true;
+    memoryPercent = 240;
+    algorithm = "zstd";
+  };
+
+  fileSystems."/mnt/backup" =
+  { device = "/dev/disk/by-uuid/d6041e04-2e27-4bb2-8373-115db5162a57";
+    fsType = "btrfs";
+    options = [ "nofail" ];
+  };
+
+  boot.initrd.luks.devices."backup".device = "/dev/disk/by-uuid/d8669df4-a24b-453e-9aa1-d58cb2b564a2";
+
+
   # Enables DHCP on each ethernet and wireless interface. In case of scripted networking
   # (the default) this is the recommended approach. When using systemd-networkd it's
   # still possible to use this option, but it's recommended to use it in conjunction

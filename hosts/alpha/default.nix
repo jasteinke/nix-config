@@ -19,6 +19,21 @@
   # Define on which hard drive you want to install Grub.
   # boot.loader.grub.device = "/dev/sda"; # or "nodev" for efi only
 
+  boot.initrd.secrets = {
+    "/luks.key" = null;
+  };
+
+  boot.initrd.luks.devices.backup = {
+    device = "/dev/disk/by-uuid/d8669df4-a24b-453e-9aa1-d58cb2b564a2";
+    keyFile = "/luks.key";
+  };
+
+  # This is generally a bad idea. :-)
+  boot.kernel.sysctl = {
+    "vm.swappiness" = 200; 
+    "vm.vfs_cache_pressure" = 1;
+  };
+
   networking.hostName = "alpha"; # Define your hostname.
   # Pick only one of the below networking options.
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
@@ -46,16 +61,31 @@
 
   # Enable the X11 windowing system.
 
-  services.displayManager.defaultSession = "none+i3";
+  services.displayManager = {
+    defaultSession = "none+i3";
+    autoLogin = {
+      enable = true;
+      user = "jordan";
+    };
+  };
   services.xserver = {
     enable = true;
+    xautolock = {
+      enable = true;
+      time = 10;
+      locker = "${pkgs.i3lock}/bin/i3lock -i /home/jordan/Pictures/dark-cat.png -u";
+
+    };
     desktopManager = {
       xterm.enable = false;
     };
 
     displayManager = {
         lightdm.enable = true;
-        sessionCommands = "xmodmap -e 'pointer = 3 2 1'";
+        sessionCommands = ''
+          xmodmap -e 'pointer = 3 2 1'
+          i3lock -i /home/jordan/Pictures/dark-cat.png -u
+        '';
     };
 
     windowManager.i3 = {
@@ -74,6 +104,9 @@
     fade = true;
     vSync = true;
     backend = "glx";
+    settings = {
+      corner-radius = 5;
+    };
   };
 
   hardware.graphics.enable = true;
@@ -117,11 +150,15 @@
        firefox-bin
        keepassxc
        libreoffice
+       llama-cpp
+       maim
        mtr
        nixd
+       ollama
        pavucontrol
        pinentry-curses
-       python312Packages.gpgme
+       python312Packages.huggingface-hub
+       quickemu
        ripgrep
        sops
        tree
@@ -236,6 +273,35 @@
     enable = true;
     pinentryPackage = pkgs.pinentry-curses;
   };
+
+  services.borgbackup.jobs.home-jordan = {
+    paths = "/home/jordan";
+    encryption.mode = "none";
+    repo = "/mnt/backup/alpha-home-jordan";
+    compression = "none";
+    startAt = "hourly";
+    user = "jordan";
+    exclude = [
+      "/home/jordan/.cache"
+      "/home/jordan/.ollama"
+      "/home/jordan/quickemu"
+    ];
+    prune.keep = {
+      within = "1d"; # Keep all archives from the last day
+      daily = 7;
+      weekly = 4;
+      monthly = -1;  # Keep at least one archive for each month
+    };
+  };
+  nix.optimise.automatic = true;
+  nix.optimise.dates = [ "03:45" ]; # Optional; allows customizing optimisation schedule
+
+  nix.gc = {
+    automatic = true;
+    dates = "weekly";
+    options = "--delete-older-than 30d";
+  };
+
 
 }
 

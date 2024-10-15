@@ -18,6 +18,7 @@
     '';
   
     shellAliases = {
+      b = "btop";
       c = "cd";
       t = "tree";
       v = "nvim";
