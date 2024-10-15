@@ -40,6 +40,8 @@ in {
 
       gaps.inner = 15;
 
+      defaultWorkspace = "workspace number 2";
+
 
       keybindings = lib.mkOptionDefault {
         "${mod}+s" = "exec ${pkgs.dmenu}/bin/dmenu_run -nb '#eff1f5' -nf '#4c4f69' -sb '#7287fd' -sf '#eff1f5'";

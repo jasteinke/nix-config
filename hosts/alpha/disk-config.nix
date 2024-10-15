@@ -39,40 +39,44 @@
                   type = "btrfs";
                   extraArgs = [ "-f" ];
                   subvolumes = {
-                    "root" = {
+                    "/root" = {
                       mountpoint = "/";
                       mountOptions = [ "compress=zstd" "noatime" ];
                     };
-                    "home" = {
+                    "/home" = {
                       mountpoint = "/home";
                       mountOptions = [ "compress=zstd" "noatime" ];
                     };
-                    "nix" = {
+                    "/nix" = {
                       mountpoint = "/nix";
                       mountOptions = [ "compress=zstd" "noatime" ];
                     };
+                    "/nix/tmp" = {
+                      mountpoint = "/nix/tmp";
+                      mountOptions = [ "compress=zstd" "noatime" ];
+                    };
 
-                    "tmp" = {
+                    "/tmp" = {
                       mountpoint = "/tmp";
                       mountOptions = [ "compress=zstd" "noatime" ];
                     };
 
-                    "var" = {
+                    "/var" = {
                       mountpoint = "/var";
                       mountOptions = [ "compress=zstd" "noatime" ];
                     };
 
-                    "var-tmp" = {
+                    "/var/tmp" = {
                       mountpoint = "/var/tmp";
                       mountOptions = [ "compress=zstd" "noatime" ];
                     };
 
-                    "var-log" = {
+                    "/var/log" = {
                       mountpoint = "/var/log";
                       mountOptions = [ "compress=zstd" "noatime" ];
                     };
 
-                    "var-log-audit" = {
+                    "/var/log/audit" = {
                       mountpoint = "/var/log/audit";
                       mountOptions = [ "compress=zstd" "noatime" ];
                     };

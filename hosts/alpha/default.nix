@@ -68,6 +68,7 @@
       user = "jordan";
     };
   };
+  services.unclutter-xfixes.enable = true;
   services.xserver = {
     enable = true;
     xautolock = {
