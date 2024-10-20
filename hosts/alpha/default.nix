@@ -30,9 +30,20 @@
 
   # This is generally a bad idea. :-)
   boot.kernel.sysctl = {
-    "vm.swappiness" = 200; 
+    "vm.swappiness" = 200;
     "vm.vfs_cache_pressure" = 1;
   };
+
+  boot.extraModprobeConfig = ''
+    install cramfs   ${pkgs.coreutils}/bin/true;
+    install freevxfs ${pkgs.coreutils}/bin/true;
+    install hfs      ${pkgs.coreutils}/bin/true;
+    install hfsplus  ${pkgs.coreutils}/bin/true;
+    install jffs2    ${pkgs.coreutils}/bin/true;
+    install squashfs ${pkgs.coreutils}/bin/true;
+    install udf      ${pkgs.coreutils}/bin/true;
+
+  '';
 
   networking.hostName = "alpha"; # Define your hostname.
   # Pick only one of the below networking options.
@@ -55,7 +66,7 @@
   # };
 
   fonts.packages = with pkgs; [
-    noto-fonts
+    ipafont
     (nerdfonts.override { fonts = [ "Hack" ]; })
   ];
 
@@ -145,15 +156,21 @@
      extraGroups = [ "wheel" ]; # Enable ‘sudo’ for the user.
      packages = with pkgs; [
        age
+       anki-bin
        cloudflare-warp
+       coreutils
        dropbox
        dropbox-cli
+       emacs
        firefox-bin
        keepassxc
        libreoffice
        llama-cpp
        maim
+       marksman
+       mplayer
        mtr
+       newsboat
        nixd
        ollama
        pavucontrol
@@ -162,6 +179,9 @@
        quickemu
        ripgrep
        sops
+       superhtml
+       texlab
+       texliveMedium
        tree
        xclip
        xorg.xmodmap

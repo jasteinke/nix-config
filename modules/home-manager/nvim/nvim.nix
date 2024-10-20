@@ -9,7 +9,7 @@
       vim-airline-clock
 
       nvim-treesitter-context
-      (nvim-treesitter.withPlugins (p: [ p.c p.cpp p.nix ]))      
+      (nvim-treesitter.withPlugins (p: [ p.nix ]))      
 
       nvim-lspconfig
       cmp-nvim-lsp
@@ -20,6 +20,11 @@
       
       cmp-vsnip
       vim-vsnip
+
+      vimtex
+      vim-markdown
+
+      render-markdown-nvim
 
     ];
     enable = true;

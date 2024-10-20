@@ -22,6 +22,10 @@
       c = "cd";
       t = "tree";
       v = "nvim";
+      z = "cd /home/jordan/zettelkasten; nvim /home/jordan/zettelkasten";
+      nz=''cd /home/jordan/zettelkasten; t=$(date -u "+%Y%m%d%H%M%S"); \
+        echo "# $t" > "$t.md"; nvim "$t.md"'';
+
     };
     history = {
       size = 200000;

@@ -9,6 +9,7 @@
     ./firefox.nix
     ./git.nix
     ./gtk.nix
+    ./i18n.nix
     ./i3.nix
     ./kitty.nix
     ./less.nix

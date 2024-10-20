@@ -45,7 +45,7 @@
                     };
                     "/home" = {
                       mountpoint = "/home";
-                      mountOptions = [ "compress=zstd" "noatime" ];
+                      mountOptions = [ "compress=zstd" "noatime" "nodev" ];
                     };
                     "/nix" = {
                       mountpoint = "/nix";
@@ -58,7 +58,13 @@
 
                     "/tmp" = {
                       mountpoint = "/tmp";
-                      mountOptions = [ "compress=zstd" "noatime" ];
+                      mountOptions = [
+                        "compress=zstd"
+                        "noatime"
+                        "nodev"
+                        "noexec"
+                        "nosuid"
+                      ];
                     };
 
                     "/var" = {
@@ -68,7 +74,13 @@
 
                     "/var/tmp" = {
                       mountpoint = "/var/tmp";
-                      mountOptions = [ "compress=zstd" "noatime" ];
+                      mountOptions = [
+                        "compress=zstd"
+                        "noatime"
+                        "nodev"
+                        "noexec"
+                        "nosuid"
+                      ];
                     };
 
                     "/var/log" = {
@@ -86,6 +98,17 @@
             };
           };
         };
+      };
+    };
+    nodev = {
+      "/dev/shm" = {
+        fsType = "tmpfs";
+        mountOptions = [
+          "nodev"
+          "noexec"
+          "nosuid"
+          "rw"
+        ];
       };
     };
   };

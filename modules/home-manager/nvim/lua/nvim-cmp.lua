@@ -66,4 +66,7 @@ cmp.setup({
 --  require('lspconfig')['<YOUR_LSP_SERVER>'].setup {
 --    capabilities = capabilities
 --  }
+  require'lspconfig'.marksman.setup{}
   require'lspconfig'.nixd.setup{}
+  require'lspconfig'.superhtml.setup{}
+  require'lspconfig'.texlab.setup{}

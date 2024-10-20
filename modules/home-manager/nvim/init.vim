@@ -21,6 +21,7 @@ set colorcolumn=80
 set cursorline
 set cursorcolumn
 set relativenumber
+"set autochdir
 
 let mapleader=" "
 
@@ -65,5 +66,7 @@ hi clear colorcolumn
 hi link colorcolumn cursorcolumn
 hi clear treesittercontext
 hi link treesittercontext cursorcolumn
+
+let g:vim_markdown_folding_disabled = 1
 
 
