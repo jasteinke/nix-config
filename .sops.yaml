@@ -1,0 +1,9 @@
+keys:
+  - &admin_jordan age16qkxgvq8z7e3kfexkh9ezp9gqnuh3wgant0uxpu7k6m9925974dqhngj5a
+  - &server_redwood age18rtllxcsgqjlvrt05lnm8654q33fp9t5rgzlzjm9dfxek3ly7pksu98ewz
+creation_rules:
+  - path_regex: secrets/([^/]+\.[^/]+|[^/]+)
+    key_groups:
+    - age:
+      - *admin_jordan
+      - *server_redwood

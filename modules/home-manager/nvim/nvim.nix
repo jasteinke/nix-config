@@ -26,6 +26,9 @@
 
       (nvim-treesitter.withPlugins (p: [ p.cpp p.nix p.rust]))
       nvim-treesitter-context
+
+      vim-markdown
+      render-markdown-nvim
     ];
   };
 }

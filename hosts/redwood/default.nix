@@ -9,6 +9,7 @@
     [ # Include the results of the hardware scan.
       ./disk-config.nix
       ./hardware-configuration.nix
+      ../../modules/nixos/searx.nix
     ];
 
 
@@ -26,6 +27,21 @@
   };
 
   boot.initrd.secrets = { "/luks.key" = null; };
+
+  # I disavow these sysctl tweaks. I have *so* much zram and my hard drives are *so* slow. This is probably a bad idea for you. >_>
+  boot.kernel.sysctl = {
+    "vm.dirty_background_ratio" = 60;
+    "vm.dirty_ratio" = 80;
+    "vm.swappiness" = 200;
+    "vm.vfs_cache_pressure" = 10;
+  };
+
+  boot.extraModprobeConfig = ''
+    options kvm_intel nested=1
+    options kvm_intel emulate_invalid_guest_state=0
+    options kvm ignore_msrs=1
+  '';
+  virtualisation.libvirtd.enable = true;
 
   #boot.kernelPackages = pkgs.linuxPackagesFor (pkgs.linux_6_6.override { argsOverride = { version = "6.6.67"; }; });
 
@@ -115,48 +131,58 @@
   # Enable sound.
   # hardware.pulseaudio.enable = true;
   # OR
-   services.pipewire = {
-     enable = true;
-     pulse.enable = true;
-   };
+  services.pipewire = {
+    enable = true;
+    pulse.enable = true;
+  };
 
   # Enable touchpad support (enabled default in most desktopManager).
   # services.libinput.enable = true;
 
   # Define a user account. Don't forget to set a password with ‘passwd’.
-   users.users.jordan = {
-     description = "Jordan Steinke";
-     isNormalUser = true;
-     extraGroups = [ "adbusers" "wheel" ]; # Enable ‘sudo’ for the user.
-   };
+  users.users.jordan = {
+    description = "Jordan Steinke";
+    isNormalUser = true;
+    extraGroups = [ "adbusers" "libvirtd" "wheel" ]; # Enable ‘sudo’ for the user.
+  };
+  security.sudo.extraConfig = ''
+    Defaults        timestamp_timeout=60
+  '';
 
-   programs.adb.enable = true;
+  programs.adb.enable = true;
 
 
   # List packages installed in system profile. To search, run:
   # $ nix search wget
-   environment.systemPackages = with pkgs; [
-     clang
-     clang-tools
-     fastfetch
-     keepassxc
-     mtr
-     neovim
-     inputs.nixpkgs-unstable.legacyPackages.x86_64-linux.nixd
-     nix-index
-     pavucontrol
-     ripgrep
-     termdown
-     tree
-     wget
-     xclip
-     xorg.xmodmap
-   ];
+  environment.systemPackages = with pkgs; [
+    age
+    anki-bin
+    clang
+    clang-tools
+    fastfetch
+    keepassxc
+    maim
+    mplayer
+    mtr
+    neovim
+    inputs.nixpkgs-unstable.legacyPackages.x86_64-linux.nixd
+    nix-index
+    pavucontrol
+    quickemu
+    ripgrep
+    sops
+    termdown
+    timewarrior
+    tree
+    wget
+    xclip
+    xorg.xmodmap
+  ];
 
-   programs.steam.enable = true;
+  programs.steam.enable = true;
 
-   nixpkgs.config.allowUnfree = true;
-   nixpkgs.config.nvidia.acceptLicense = true;
+  nixpkgs.config.allowUnfree = true;
+  nixpkgs.config.nvidia.acceptLicense = true;
 
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
@@ -173,8 +199,8 @@
   # Open ports in the firewall.
   # networking.firewall.allowedTCPPorts = [ ... ];
   # networking.firewall.allowedUDPPorts = [ ... ];
-  # Or disable the firewall altogether.
-  # networking.firewall.enable = false;
+  networking.firewall.enable = true;
+  services.cloudflare-warp.enable = true;
 
   # Copy the NixOS configuration file and link it from the resulting system
   # (/run/current-system/configuration.nix). This is useful in case you
@@ -233,6 +259,10 @@
           "--dbus-user.talk=org.freedesktop.Notifications"
         ];
       };
+      discord = {
+        executable = "${pkgs.discord}/bin/discord";
+        profile = "${pkgs.firejail}/etc/firejail/discord.profile";
+      };
       tor-browser = {
         executable = "${pkgs.tor-browser}/bin/tor-browser";
         profile = "${pkgs.firejail}/etc/firejail/tor-browser.profile";
@@ -249,6 +279,10 @@
   services.borgbackup.jobs.redwood-home-jordan = {
     paths = "/home/jordan";
     encryption.mode = "none";
+    exclude = [
+      "/home/jordan/.cache"
+      "/home/jordan/quickemu"
+    ];
     repo = "/mnt/backup/redwood-home-jordan";
     compression = "none";
     startAt = "hourly";
@@ -266,8 +300,20 @@
     pinentryPackage = pkgs.pinentry-curses;
   };
 
+  sops.age.sshKeyPaths = [ "/etc/ssh/ssh_host_ed25519_key" ];
+  sops.secrets = {
+    "cloudflare-warp" = {
+      format = "binary";
+      path = "/var/lib/cloudflare-warp/mdm.xml";
+      sopsFile = ../../secrets/common/cloudflare-warp;
+    };
+    "searx" = {
+      format = "binary";
+      sopsFile = ../../secrets/redwood/searx;
+    };
+  };
 
-
-
+  # Needed for easyeffects.
+  programs.dconf.enable = true;
 }
 

@@ -67,9 +67,9 @@ let g:airline_symbols.readonly = ''
 let g:airline_symbols.linenr = ''
 
 hi clear cursorcolumn
-hi link cursorcolumn cursorline 
+hi link cursorcolumn cursorline
 hi clear treesittercontext
-hi link treesittercontext cursorline 
+hi link treesittercontext cursorline
 hi clear colorcolumn
 hi link colorcolumn cursorline
 

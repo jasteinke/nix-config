@@ -25,8 +25,10 @@
     shellAliases = {
       c = "cd";
       b = "btop";
+      nz = ''cd /home/jordan/zettelkasten; ts=$(date -u +%Y%m%d%H%M%S); echo "# $ts.md" >> "$ts.md"; nvim $ts.md'';
       t = "tree";
       v = "nvim";
+      z = "cd /home/jordan/zettelkasten; nvim";
     };
 
     syntaxHighlighting.enable = true;
