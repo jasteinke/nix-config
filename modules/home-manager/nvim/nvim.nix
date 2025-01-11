@@ -19,6 +19,7 @@
 
 
       vim-airline
+      vim-airline-clock
       vim-airline-themes
 
       plenary-nvim

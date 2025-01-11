@@ -78,7 +78,7 @@
 
   fonts.packages = with pkgs; [
     (nerdfonts.override { fonts = [ "Hack" ]; })
-  #  nerd-fonts.hack
+    #nerd-fonts.hack
   ];
 
   services.unclutter-xfixes.enable = true;
@@ -92,13 +92,22 @@
   hardware.graphics.enable = true;
 
 
+  services.displayManager = {
+    autoLogin = {
+      user = "jordan";
+      enable = true;
+    };
+    defaultSession = "none+i3";
+  };
+
+
 
   services.xserver = {
     videoDrivers = [ "nvidia" ];
     xautolock = {
       enable = true;
       time = 10;
-      locker = "${pkgs.i3lock}/bin/i3lock -c 000000";
+      locker = "${pkgs.i3lock}/bin/i3lock -u -c 000000";
     };
     enable = true;
 
@@ -107,8 +116,10 @@
     };
 
     displayManager = {
-      defaultSession = "none+i3";
-      sessionCommands = "xmodmap -e 'pointer = 3 2 1'";
+      sessionCommands = ''
+        i3lock -u -c 000000
+        xmodmap -e 'pointer = 3 2 1'
+      '';
     };
 
     windowManager.i3 = {
@@ -136,18 +147,31 @@
     pulse.enable = true;
   };
 
-  # Enable touchpad support (enabled default in most desktopManager).
-  # services.libinput.enable = true;
-
-  # Define a user account. Don't forget to set a password with ‘passwd’.
-  users.users.jordan = {
-    description = "Jordan Steinke";
-    isNormalUser = true;
-    extraGroups = [ "adbusers" "libvirtd" "wheel" ]; # Enable ‘sudo’ for the user.
+  users = {
+    allowNoPasswordLogin = true;
+    mutableUsers = false;
+    users.root.hashedPassword = "*";
+    users.jordan = {
+      description = "Jordan Steinke";
+      extraGroups = [ "adbusers" "libvirtd" "wheel" ];
+      hashedPassword = "*";
+      isNormalUser = true;
+    };
   };
   security.sudo.extraConfig = ''
     Defaults        timestamp_timeout=60
   '';
+  security.pam.u2f.settings = {
+    authfile = "/run/secrets/u2f_keys";
+    pinverification=1;
+  };
+  security.pam.services = {
+    i3lock.u2fAuth = true;
+    login.u2fAuth = true;
+    sudo.u2fAuth = true;
+  };
+
+  services.pcscd.enable = true;
 
   programs.adb.enable = true;
 
@@ -159,24 +183,35 @@
     anki-bin
     clang
     clang-tools
+    endgame-singularity
+    endless-sky
     fastfetch
+    gimp
     keepassxc
     maim
+    mindustry
+    minetest
     mplayer
     mtr
     neovim
     inputs.nixpkgs-unstable.legacyPackages.x86_64-linux.nixd
+    #nixd
     nix-index
-    pavucontrol
+    pulsemixer
+    #inputs.nixpkgs-stable.legacyPackages.x86_64-linux.quickemu
     quickemu
     ripgrep
+    rustc
     sops
     termdown
     timewarrior
     tree
+    unzip
+    vlc
     wget
     xclip
     xorg.xmodmap
+    yubioath-flutter
   ];
 
   programs.steam.enable = true;
@@ -249,6 +284,10 @@
   programs.firejail = {
     enable = true;
     wrappedBinaries = {
+      brave = {
+        executable = "${pkgs.brave}/bin/brave";
+        profile = "${pkgs.firejail}/etc/firejail/brave.profile";
+      };
       chromium = {
         executable = "${pkgs.chromium}/bin/chromium";
         profile = "${pkgs.firejail}/etc/firejail/chromium.profile";
@@ -263,6 +302,7 @@
         executable = "${pkgs.discord}/bin/discord";
         profile = "${pkgs.firejail}/etc/firejail/discord.profile";
       };
+
       tor-browser = {
         executable = "${pkgs.tor-browser}/bin/tor-browser";
         profile = "${pkgs.firejail}/etc/firejail/tor-browser.profile";
@@ -310,6 +350,11 @@
     "searx" = {
       format = "binary";
       sopsFile = ../../secrets/redwood/searx;
+    };
+    "u2f_keys" = {
+      format = "binary";
+      owner = "jordan";
+      sopsFile = ../../secrets/common/u2f_keys;
     };
   };
 

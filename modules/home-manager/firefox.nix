@@ -30,6 +30,7 @@
         "dom.disable_window_flip" = true;
         "dom.disable_window_move_resize" = true;
         "dom.private-attribution.submission.enabled" = false;
+        "dom.push.enabled" = false;
         "extensions.blocklist.enabled" = true;
         "extensions.htmlaboutaddons.recommendations.enabled" = false;
         "extensions.update.autoUpdateDefault" = true;
@@ -38,6 +39,10 @@
         "extensions.pocket.enabled" = false;
         "geo.enabled" = false;
         "identity.fxaccounts.enabled" = false;
+        "media.autoplay.allow-extension-background-pages" = false;
+        "media.autoplay.block-event.enabled" = true;
+        "media.autoplay.blocking_policy" = 2;
+        "media.autoplay.default" = 5;
         "media.eme.enabled" = false;
         "media.peerconnection.enabled" = false;
         "media.peerconnection.use_document_iceservers" = false;
@@ -46,6 +51,7 @@
         "network.dns.disablePrefetch" = true;
         "network.IDN_show_punycode" = true;
         "network.protocol-handler.warn-external-default" = true;
+        "permissions.default.desktop-notification" = 2;
         "privacy.donottrackheader.enabled" = true;
         "privacy.resistFingerprinting" = true;
         "privacy.resistFingerprinting.pbmode" = true;

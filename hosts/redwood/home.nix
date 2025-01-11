@@ -10,6 +10,7 @@
     ../../modules/home-manager/i3.nix
     ../../modules/home-manager/kitty.nix
     ../../modules/home-manager/less.nix
+    ../../modules/home-manager/newsboat.nix
     ../../modules/home-manager/nvim/nvim.nix
     ../../modules/home-manager/zsh/zsh.nix
   ];

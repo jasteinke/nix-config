@@ -1,7 +1,7 @@
 { config, lib, pkgs, ... }:
 
 let
-  mod = "Mod1";
+  mod = "Mod4";
 
   rosewater = "#dc8a78";
   peach = "#fe640b";
@@ -25,7 +25,7 @@ in {
       keybindings = lib.mkOptionDefault {
         "${mod}+s" = "exec ${pkgs.dmenu}/bin/dmenu_run -nb '#eff1f5' -sf '#4c4f69' -sb '#7287fd' -nf '#4c4f69'";
         "${mod}+x" = "exec sh -c '${pkgs.maim}/bin/maim -s | xclip -selection clipboard -t image/png'";
-        "${mod}+Escape" = "exec sh -c '${pkgs.i3lock}/bin/i3lock -c 000000'";
+        "${mod}+Escape" = "exec sh -c '${pkgs.i3lock}/bin/i3lock -u -c 000000'";
         "${mod}+Return" = "exec sh -c '${pkgs.kitty}/bin/kitty'";
 
         # Focus
