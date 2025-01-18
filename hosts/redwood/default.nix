@@ -77,8 +77,8 @@
   # };
 
   fonts.packages = with pkgs; [
-    (nerdfonts.override { fonts = [ "Hack" ]; })
-    #nerd-fonts.hack
+    #(nerdfonts.override { fonts = [ "Hack" ]; })
+    nerd-fonts.hack
   ];
 
   services.unclutter-xfixes.enable = true;
@@ -194,8 +194,8 @@
     mplayer
     mtr
     neovim
-    inputs.nixpkgs-unstable.legacyPackages.x86_64-linux.nixd
-    #nixd
+    #inputs.nixpkgs-unstable.legacyPackages.x86_64-linux.nixd
+    nixd
     nix-index
     pulsemixer
     #inputs.nixpkgs-stable.legacyPackages.x86_64-linux.quickemu
@@ -321,7 +321,7 @@
     encryption.mode = "none";
     exclude = [
       "/home/jordan/.cache"
-      "/home/jordan/quickemu"
+      "/home/jordan/guests"
     ];
     repo = "/mnt/backup/redwood-home-jordan";
     compression = "none";

@@ -17,6 +17,7 @@
       { url = "https://www.eff.org/rss/updates.xml"; }
       { url = "https://www.erininthemorning.com/feed"; }
       { url = "https://www.icann.org/news.rss"; }
+      { url = "https://notado.app/feeds/jado/software-development"; }
       { url = "https://www.opensecrets.org/news/feed"; }
       { url = "https://pluralistic.net/feed/"; }
       { url = "https://prisonjournalismproject.org/feed/"; }
