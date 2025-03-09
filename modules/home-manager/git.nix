@@ -7,6 +7,7 @@
     userName = "Jordan Steinke";
     extraConfig = {
       commit.gpgsign = true;
+      init.defaultBranch = "master";
     };
   };
 }

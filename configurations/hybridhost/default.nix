@@ -123,6 +123,7 @@
   environment.systemPackages = with pkgs; [
     age
     anki-bin
+    calibre
     clang
     clang-tools
     dig
@@ -132,6 +133,7 @@
     ghidra-bin
     gimp
     haskell-language-server
+    kdePackages.okular
     keepassxc
     libreoffice
     maim
@@ -140,7 +142,6 @@
     neovim
     nixd
     nix-index
-    okular
     ollama
     pulsemixer
     quickemu
@@ -209,10 +210,10 @@
           "--dbus-user.talk=org.freedesktop.Notifications"
         ];
       };
-      kiwix = {
-        executable = "${pkgs.kiwix}/bin/kiwix-desktop";
-        profile = "${pkgs.firejail}/etc/firejail/kiwix-desktop.profile";
-      };
+#      kiwix = {
+#        executable = "${pkgs.kiwix}/bin/kiwix-desktop";
+#        profile = "${pkgs.firejail}/etc/firejail/kiwix-desktop.profile";
+#      };
     };
   };
 
@@ -229,24 +230,44 @@
     '';
   };
 
-  services.borgbackup.jobs.hybridhost-home-jordan = {
-    paths = "/home/jordan";
-    encryption.mode = "none";
-    exclude = [
-      "/home/jordan/.cache"
-      "/home/jordan/.config/google-chrome-beta"
-      "/home/jordan/guests"
-    ];
-    repo = "/mnt/backup/hybridhost-home-jordan";
-    compression = "none";
-    startAt = "hourly";
-    prune.keep = {
-      within = "1d"; # Keep all archives from the last day
-      daily = 7;
-      weekly = 4;
-      monthly = -1;  # Keep at least one archive for each month
+  services.borgbackup.jobs = {
+    hybridhost-home-jordan = {
+      paths = "/home/jordan";
+      encryption.mode = "none";
+      exclude = [
+        "/home/jordan/.cache"
+        "/home/jordan/.config/google-chrome-beta"
+        "/home/jordan/guests"
+      ];
+      repo = "/mnt/backup/hybridhost-home-jordan";
+      compression = "none";
+      startAt = "hourly";
+      prune.keep = {
+        within = "1d"; # Keep all archives from the last day
+        daily = 7;
+        weekly = 4;
+        monthly = -1;  # Keep at least one archive for each month
+      };
+      user = "jordan";
     };
-    user = "jordan";
+    hybridhost-home-zettelkasten = {
+      paths = "/home/jordan/zettelkasten";
+      encryption = {
+        mode = "repokey-blake2";
+        passCommand = "cat /run/secrets/borgbackup-passphrase";
+      };
+      repo = "ssh://o1jfie6a@o1jfie6a.repo.borgbase.com/./repo";
+      environment.BORG_RSH = "ssh -i /run/secrets/borgbackup-ssh";
+      compression = "auto,lzma";
+      startAt = "hourly";
+      prune.keep = {
+        within = "1d"; # Keep all archives from the last day
+        daily = 7;
+        weekly = 4;
+        monthly = -1;  # Keep at least one archive for each month
+      };
+      user = "jordan";
+    };
   };
 
   programs.gnupg.agent = {
@@ -256,6 +277,16 @@
 
   sops.age.sshKeyPaths = [ "/etc/ssh/ssh_host_ed25519_key" ];
   sops.secrets = {
+    "borgbackup-passphrase" = {
+      format = "binary";
+      owner = "jordan";
+      sopsFile = ../../secrets/common/borgbackup-passphrase;
+    };
+    "borgbackup-ssh" = {
+      format = "binary";
+      owner = "jordan";
+      sopsFile = ../../secrets/common/borgbackup-ssh;
+    };
     "cloudflare-warp" = {
       format = "binary";
       path = "/var/lib/cloudflare-warp/mdm.xml";
