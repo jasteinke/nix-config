@@ -26,13 +26,25 @@
     "vm.vfs_cache_pressure" = 10;
   };
 
+  #boot.kernelPackages = pkgs.linuxPackages_zen;
+
   networking.hostName = "hybridhost";
 
   time.timeZone = "America/Chicago";
 
   fonts.packages = with pkgs; [
+    ipafont
     nerd-fonts.hack
   ];
+
+  i18n.inputMethod = {
+    type = "fcitx5";
+    enable = true;
+    fcitx5.addons = with pkgs; [
+      fcitx5-mozc
+      fcitx5-gtk
+    ];
+  };
 
   services.unclutter-xfixes.enable = true;
   services.picom = {
@@ -127,16 +139,21 @@
     clang
     clang-tools
     dig
+    endgame-singularity
+    endless-sky
     fastfetch
     ffmpeg
     ghc
     ghidra-bin
     gimp
     haskell-language-server
+    heroic
     kdePackages.okular
     keepassxc
     libreoffice
+    luanti
     maim
+    mindustry
     mplayer
     mtr
     neovim
@@ -148,6 +165,8 @@
     ripgrep
     rustc
     sops
+    spotify
+    steam
     tcpdump
     termdown
     texliveMedium
@@ -178,6 +197,12 @@
   environment.variables.EDITOR = "nvim";
   users.defaultUserShell = pkgs.zsh;
   programs.zsh.enable = true;
+
+  catppuccin = {
+    enable = true;
+    accent = "lavender";
+    flavor = "latte";
+  };
 
   location= {
     latitude = 41.25;
@@ -210,10 +235,25 @@
           "--dbus-user.talk=org.freedesktop.Notifications"
         ];
       };
-#      kiwix = {
-#        executable = "${pkgs.kiwix}/bin/kiwix-desktop";
-#        profile = "${pkgs.firejail}/etc/firejail/kiwix-desktop.profile";
-#      };
+      kiwix = {
+        executable = "${pkgs.kiwix}/bin/kiwix-desktop";
+        profile = "${pkgs.firejail}/etc/firejail/kiwix-desktop.profile";
+      };
+      tor-browser = {
+        executable = "${pkgs.tor-browser}/bin/tor-browser";
+        profile = "${pkgs.firejail}/etc/firejail/tor-browser.profile";
+      };
+
+      ungoogled-chromium = {
+        executable = "${pkgs.ungoogled-chromium}/bin/chromium";
+        profile = "${pkgs.firejail}/etc/firejail/chromium.profile";
+        extraArgs = [
+          # Required for U2F USB stick
+          "--ignore=private-dev"
+          # Enable system notifications
+          "--dbus-user.talk=org.freedesktop.Notifications"
+        ];
+      };
     };
   };
 
@@ -318,22 +358,4 @@
   };
   nix.optimise.automatic = true;
   nix.optimise.dates = [ "03:45" ];
-  console.colors = [
-    "eeeeee"
-    "af0000"
-    "008700"
-    "5f8700"
-    "0087af"
-    "878787"
-    "005f87"
-    "444444"
-    "bcbcbc"
-    "d70000"
-    "d70087"
-    "8700af"
-    "d75f00"
-    "d75f00"
-    "005faf"
-    "005f87"
-  ];
 }

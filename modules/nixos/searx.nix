@@ -20,7 +20,6 @@
         "google".disabled = false;
         "qwant".disabled = true;
       };
-      search.safe_search = 2;
       server = {
         bind_address = "127.0.0.1";
         port = 8888;
@@ -32,11 +31,7 @@
         hotkeys = "vim";
         infinite_scroll = true;
       };
-
       outgoing.verify = "/etc/ssl/certs/ca-certificates.crt";
-      preferences.lock = [
-        "safesearch"
-      ];
     };
   };
 }

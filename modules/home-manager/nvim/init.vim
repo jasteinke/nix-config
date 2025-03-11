@@ -28,15 +28,6 @@ set cursorcolumn
 set relativenumber
 "set autochdir
 
-"colorscheme PaperColor
-if $TERM ==# "linux"
-  " When running in a TTY with a remapped palette, use minimal coloring
-  set background=light
-  " Possibly skip setting PaperColor explicitly
-else
-  colorscheme PaperColor
-endif
-
 let mapleader=" "
 
 nnoremap <leader>ff <cmd>Telescope find_files<cr>
@@ -44,6 +35,7 @@ nnoremap <leader>fg <cmd>Telescope live_grep<cr>
 nnoremap <leader>fb <cmd>Telescope buffers<cr>
 nnoremap <leader>fh <cmd>Telescope help_tags<cr>
 
+let g:airline_theme = 'catppuccin'
 " air-line
 let g:airline_powerline_fonts = 1
 

@@ -5,6 +5,8 @@
     browser-previews.url = "github:nix-community/browser-previews";
     browser-previews.inputs.nixpkgs.follows = "nixpkgs";
 
+    catppuccin.url = "github:catppuccin/nix";
+
     disko.url = "github:nix-community/disko";
     disko.inputs.nixpkgs.follows = "nixpkgs";
 
@@ -18,7 +20,7 @@
 
   };
 
-  outputs = inputs@{ disko, home-manager, nixpkgs, ... }:{
+  outputs = inputs@{ catppuccin, disko, home-manager, nixpkgs, ... }:{
     nixosConfigurations = {
       webguest = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
@@ -41,6 +43,7 @@
         system = "x86_64-linux";
         specialArgs = { inherit inputs; };
         modules = [
+          catppuccin.nixosModules.catppuccin
           ./configurations/hybridhost
           home-manager.nixosModules.home-manager
           {
@@ -48,6 +51,7 @@
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
             home-manager.users.jordan.imports = [
+              catppuccin.homeManagerModules.catppuccin
               ./configurations/hybridhost/home.nix
             ];
           }
@@ -58,12 +62,14 @@
       iso = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
         modules = [
+          catppuccin.nixosModules.catppuccin
           home-manager.nixosModules.home-manager
           {
             home-manager.extraSpecialArgs = { inherit inputs; };
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
             home-manager.users.jordan.imports = [
+              catppuccin.homeManagerModules.catppuccin
               ./configurations/iso/home.nix
             ];
           }

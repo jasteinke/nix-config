@@ -24,8 +24,9 @@
 
     shellAliases = {
       c = "cd";
-      cn = "cd ~/nix-config";
+      cn = "cd ~/Dropbox/nix-config";
       b = "btop";
+      n = "newsboat";
       nbi = "nix build .#nixosConfigurations.iso.config.system.build.isoImage";
       nz = ''cd /home/jordan/zettelkasten; ts=$(date -u +%Y%m%d%H%M%S); echo "# $ts.md" >> "$ts.md"; nvim $ts.md'';
       t = "tree";

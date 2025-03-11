@@ -2,6 +2,14 @@
 
 let
   mod = "Mod4";
+
+  rosewater = "#dc8a78";
+  peach = "#fe640b";
+  lavender = "#7287fd";
+  text = "#4c4f69";
+  overlay0 = "#9ca0b0";
+  base = "#eff1f5";
+
 in {
   xsession.windowManager.i3 = {
     enable = true;
@@ -15,7 +23,7 @@ in {
 
       keybindings = lib.mkOptionDefault {
         "${mod}+c" = "exec google-chrome-beta --kiosk https://en.wikipedia.org/wiki/Special:Random";
-        "${mod}+s" = "exec ${pkgs.dmenu}/bin/dmenu_run -nb '#eeeeee' -sf '#eeeeee' -sb '#005f87' -nf '#444444'";
+        "${mod}+s" = "exec ${pkgs.dmenu}/bin/dmenu_run -nb '#eff1f5' -sf '#4c4f69' -sb '#7287fd' -nf '#4c4f69'";
         "${mod}+x" = "exec sh -c '${pkgs.maim}/bin/maim -s | xclip -selection clipboard -t image/png'";
         "${mod}+Escape" = "exec sh -c '${pkgs.i3lock}/bin/i3lock -u -c 000000'";
         "${mod}+Return" = "exec sh -c '${pkgs.kitty}/bin/kitty'";
@@ -54,42 +62,43 @@ in {
       };
       colors = {
         focused = {
-          background   = "#eeeeee";
-          border       = "#0087af";
-          childBorder  = "#0087af";
-          text         = "#444444";
-          indicator    = "#5fafd7";
+          background = "${base}";
+          border = "${lavender}";
+          childBorder = "${lavender}";
+          text = "${text}";
+          indicator = "${rosewater}";
         };
         focusedInactive = {
-          background   = "#eeeeee";
-          border       = "#d0d0d0";
-          childBorder  = "#d0d0d0";
-          text         = "#444444";
-          indicator    = "#5fafd7";
+          background = "${base}";
+          border = "${overlay0}";
+          childBorder = "${overlay0}";
+          text = "${text}";
+          indicator = "${rosewater}";
         };
         unfocused = {
-          background   = "#eeeeee";
-          border       = "#d0d0d0";
-          childBorder  = "#d0d0d0";
-          text         = "#444444";
-          indicator    = "#5fafd7";
+          background = "${base}";
+          border = "${overlay0}";
+          childBorder = "${overlay0}";
+          text = "${text}";
+          indicator = "${rosewater}";
         };
         urgent = {
-          background   = "#eeeeee";
-          border       = "#d75f00";
-          childBorder  = "#d75f00";
-          text         = "#d75f00";
-          indicator    = "#d0d0d0";
+          background = "${base}";
+          border = "${peach}";
+          childBorder = "${peach}";
+          text = "${peach}";
+          indicator = "${overlay0}";
         };
         placeholder = {
-          background   = "#eeeeee";
-          border       = "#d0d0d0";
-          childBorder  = "#d0d0d0";
-          text         = "#444444";
-          indicator    = "#d0d0d0";
+          background = "${base}";
+          border = "${overlay0}";
+          childBorder = "${overlay0}";
+          text = "${text}";
+          indicator = "${overlay0}";
         };
-        background = "#eeeeee";
+        background = "${base}";
       };
+
     };
   };
 }
