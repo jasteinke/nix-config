@@ -5,7 +5,7 @@
     ./disk-config.nix
     ./hardware-configuration.nix
     ../../modules/nixos/dropbox.nix
-    ../../modules/nixos/searx.nix
+#    ../../modules/nixos/searx.nix
   ];
 
   boot.loader.grub.enable = true;
@@ -26,8 +26,10 @@
     "vm.vfs_cache_pressure" = 10;
   };
 
-  #boot.kernelPackages = pkgs.linuxPackages_zen;
+  virtualisation.spiceUSBRedirection.enable = true;
 
+  #boot.kernelPackages = pkgs.linuxPackages_zen;
+  
   networking.hostName = "hybridhost";
 
   time.timeZone = "America/Chicago";
@@ -185,9 +187,10 @@
   nixpkgs.config.allowUnfree = true;
   nixpkgs.config.nvidia.acceptLicense = true;
 
-  networking.firewall.enable = true;
-
   services.cloudflare-warp.enable = true;
+  networking.firewall.enable = true;
+  networking.firewall.allowedTCPPorts = [ 8384 22000 ];
+  networking.firewall.allowedUDPPorts = [ 22000 21027 ];
 
   # Configure carefully.
   system.stateVersion = "24.11";
@@ -243,21 +246,24 @@
         executable = "${pkgs.tor-browser}/bin/tor-browser";
         profile = "${pkgs.firejail}/etc/firejail/tor-browser.profile";
       };
-
-      ungoogled-chromium = {
-        executable = "${pkgs.ungoogled-chromium}/bin/chromium";
-        profile = "${pkgs.firejail}/etc/firejail/chromium.profile";
-        extraArgs = [
-          # Required for U2F USB stick
-          "--ignore=private-dev"
-          # Enable system notifications
-          "--dbus-user.talk=org.freedesktop.Notifications"
-        ];
-      };
+#      ungoogled-chromium = {
+#        executable = "${pkgs.ungoogled-chromium}/bin/chromium";
+#        profile = "${pkgs.firejail}/etc/firejail/chromium.profile";
+#        extraArgs = [
+#          # Required for U2F USB stick
+#          "--ignore=private-dev"
+#          # Enable system notifications
+#          "--dbus-user.talk=org.freedesktop.Notifications"
+#        ];
+#      };
     };
   };
 
   environment.etc = {
+    "firejail/discord.local".text = ''
+      noblacklist ''\${HOME}/Downloads
+      whitelist ''\${HOME}/Downloads
+    '';
     "firejail/google-chrome-beta.local".text = ''
       noblacklist ''\${RUNUSER}/app
       noblacklist ''\${HOME}/Documents
@@ -358,4 +364,13 @@
   };
   nix.optimise.automatic = true;
   nix.optimise.dates = [ "03:45" ];
+
+  services = {
+    syncthing = {
+        enable = true;
+        user = "jordan";
+        dataDir = "/home/jordan";
+        configDir = "/home/jordan/.config/syncthing";
+    };
+  };
 }

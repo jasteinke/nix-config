@@ -22,8 +22,6 @@
       vim-airline-clock
       vim-airline-themes
 
-      papercolor-theme
-
       plenary-nvim
       telescope-nvim
 
