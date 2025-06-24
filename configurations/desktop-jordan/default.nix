@@ -5,15 +5,15 @@
     ./disk-config.nix
     ./hardware-configuration.nix
     ../../modules/nixos/dropbox.nix
-#    ../../modules/nixos/searx.nix
+    ../../modules/nixos/searx.nix
   ];
 
   boot.loader.grub.enable = true;
   boot.loader.grub.efiSupport = true;
   boot.loader.grub.efiInstallAsRemovable = true;
 
-  boot.initrd.luks.devices.backup = {
-    device = "/dev/disk/by-uuid/705d299c-1e67-472d-acb9-a970b8371eb8";
+  boot.initrd.luks.devices.borgbackup = {
+    device = "/dev/disk/by-uuid/d9a4ba4f-ff1f-4ab7-b59f-b59ebc7ed9a2";
     keyFile = "/luks.key";
   };
 
@@ -29,12 +29,13 @@
   virtualisation.spiceUSBRedirection.enable = true;
 
   #boot.kernelPackages = pkgs.linuxPackages_zen;
-  
-  networking.hostName = "hybridhost";
+
+  networking.hostName = "desktop-jordan";
 
   time.timeZone = "America/Chicago";
 
   fonts.packages = with pkgs; [
+    inter-alia
     ipafont
     nerd-fonts.hack
   ];
@@ -72,7 +73,7 @@
     xautolock = {
       enable = true;
       time = 60;
-      locker = "${pkgs.i3lock}/bin/i3lock -u -c 000000";
+      locker = "${pkgs.xlockmore}/bin/xlock";
     };
     enable = true;
 
@@ -92,7 +93,6 @@
       enable = true;
       extraPackages = with pkgs; [
         dmenu
-        i3lock
      ];
     };
   };
@@ -103,13 +103,12 @@
   };
 
   users = {
-    allowNoPasswordLogin = true;
-    mutableUsers = false;
-    users.root.hashedPassword = "*";
+#    allowNoPasswordLogin = true;
+#    mutableUsers = false;
+#    users.root.hashedPassword = "*";
     users.jordan = {
-      description = "Jordan Steinke";
       extraGroups = [ "adbusers" "wheel" ];
-      hashedPassword = "*";
+#     hashedPassword = "*";
       isNormalUser = true;
     };
   };
@@ -118,17 +117,17 @@
     Defaults        timestamp_timeout=60
   '';
 
-  security.pam.u2f.settings = {
-    authfile = "/run/secrets/u2f_keys";
-    origin = "nixos";
-    pinverification=1;
-  };
-
-  security.pam.services = {
-    i3lock.u2fAuth = true;
-    login.u2fAuth = true;
-    sudo.u2fAuth = true;
-  };
+#  security.pam.u2f.settings = {
+#    authfile = "/run/secrets/u2f_keys";
+#    origin = "nixos";
+#    pinverification=1;
+#  };
+#
+#  security.pam.services = {
+#    i3lock.u2fAuth = true;
+#    login.u2fAuth = true;
+#    sudo.u2fAuth = true;
+#  };
 
   services.pcscd.enable = true;
 
@@ -145,6 +144,7 @@
     endless-sky
     fastfetch
     ffmpeg
+    fortune
     ghc
     ghidra-bin
     gimp
@@ -162,6 +162,7 @@
     nixd
     nix-index
     ollama
+    pavucontrol
     pulsemixer
     quickemu
     ripgrep
@@ -187,25 +188,23 @@
   nixpkgs.config.allowUnfree = true;
   nixpkgs.config.nvidia.acceptLicense = true;
 
-  services.cloudflare-warp.enable = true;
+  #services.cloudflare-warp.enable = true;
   networking.firewall.enable = true;
   networking.firewall.allowedTCPPorts = [ 8384 22000 ];
   networking.firewall.allowedUDPPorts = [ 22000 21027 ];
+  services.tailscale.enable = true;
+  services.tailscale.extraSetFlags = [ "--exit-node=us-den-wg-101.mullvad.ts.net"];
+  services.tailscale.useRoutingFeatures ="client";
 
   # Configure carefully.
   system.stateVersion = "24.11";
 
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
+  nix.settings.download-buffer-size = 524288000;
 
   environment.variables.EDITOR = "nvim";
   users.defaultUserShell = pkgs.zsh;
   programs.zsh.enable = true;
-
-  catppuccin = {
-    enable = true;
-    accent = "lavender";
-    flavor = "latte";
-  };
 
   location= {
     latitude = 41.25;
@@ -228,17 +227,7 @@
           "--dbus-user.talk=org.freedesktop.Notifications"
         ];
       };
-      google-chrome-beta = {
-        executable = "${inputs.browser-previews.packages.x86_64-linux.google-chrome-beta}/bin/google-chrome-beta";
-        profile = "${pkgs.firejail}/etc/firejail/google-chrome-beta.profile";
-        extraArgs = [
-          # Required for U2F USB stick
-          "--ignore=private-dev"
-          # Enable system notifications
-          "--dbus-user.talk=org.freedesktop.Notifications"
-        ];
-      };
-      kiwix = {
+      kiwix-desktop = {
         executable = "${pkgs.kiwix}/bin/kiwix-desktop";
         profile = "${pkgs.firejail}/etc/firejail/kiwix-desktop.profile";
       };
@@ -246,46 +235,19 @@
         executable = "${pkgs.tor-browser}/bin/tor-browser";
         profile = "${pkgs.firejail}/etc/firejail/tor-browser.profile";
       };
-#      ungoogled-chromium = {
-#        executable = "${pkgs.ungoogled-chromium}/bin/chromium";
-#        profile = "${pkgs.firejail}/etc/firejail/chromium.profile";
-#        extraArgs = [
-#          # Required for U2F USB stick
-#          "--ignore=private-dev"
-#          # Enable system notifications
-#          "--dbus-user.talk=org.freedesktop.Notifications"
-#        ];
-#      };
     };
   };
-
-  environment.etc = {
-    "firejail/discord.local".text = ''
-      noblacklist ''\${HOME}/Downloads
-      whitelist ''\${HOME}/Downloads
-    '';
-    "firejail/google-chrome-beta.local".text = ''
-      noblacklist ''\${RUNUSER}/app
-      noblacklist ''\${HOME}/Documents
-      noblacklist ''\${HOME}/Pictures
-
-      mkdir ''\${RUNUSER}/app/org.keepassxc.KeePassXC
-      whitelist ''\${RUNUSER}/app/org.keepassxc.KeePassXC
-      whitelist ''\${HOME}/Documents
-      whitelist ''\${HOME}/Pictures
-    '';
-  };
-
   services.borgbackup.jobs = {
-    hybridhost-home-jordan = {
+    home-jordan = {
       paths = "/home/jordan";
       encryption.mode = "none";
       exclude = [
         "/home/jordan/.cache"
         "/home/jordan/.config/google-chrome-beta"
         "/home/jordan/guests"
+        "/home/jordan/.local/share/kiwix-desktop"
       ];
-      repo = "/mnt/backup/hybridhost-home-jordan";
+      repo = "/borgbackup";
       compression = "none";
       startAt = "hourly";
       prune.keep = {
@@ -296,13 +258,13 @@
       };
       user = "jordan";
     };
-    hybridhost-home-zettelkasten = {
+   home-jordan-zettelkasten = {
       paths = "/home/jordan/zettelkasten";
       encryption = {
         mode = "repokey-blake2";
         passCommand = "cat /run/secrets/borgbackup-passphrase";
       };
-      repo = "ssh://o1jfie6a@o1jfie6a.repo.borgbase.com/./repo";
+      repo = "ssh://ck3mo94g@ck3mo94g.repo.borgbase.com/./repo";
       environment.BORG_RSH = "ssh -i /run/secrets/borgbackup-ssh";
       compression = "auto,lzma";
       startAt = "hourly";
@@ -333,26 +295,21 @@
       owner = "jordan";
       sopsFile = ../../secrets/common/borgbackup-ssh;
     };
-    "cloudflare-warp" = {
-      format = "binary";
-      path = "/var/lib/cloudflare-warp/mdm.xml";
-      sopsFile = ../../secrets/common/cloudflare-warp;
-    };
+#    "cloudflare-warp" = {
+#      format = "binary";
+#      path = "/var/lib/cloudflare-warp/mdm.xml";
+#      sopsFile = ../../secrets/common/cloudflare-warp;
+#    };
     "searx" = {
       format = "binary";
-      sopsFile = ../../secrets/hybridhost/searx;
+      sopsFile = ../../secrets/desktop-jordan/searx;
     };
-    "u2f_keys" = {
-      format = "binary";
-      owner = "jordan";
-      sopsFile = ../../secrets/common/u2f_keys;
-    };
+#    "u2f_keys" = {
+#      format = "binary";
+#      owner = "jordan";
+#      sopsFile = ../../secrets/common/u2f_keys;
+#    };
   };
-
-  security.pki.certificateFiles = [
-    ../../certs/c622d5ed-8944-4dcd-915b-6e6f0efbc474.crt
-    ../../certs/jas.crt
-  ];
 
   # Needed for easyeffects.
   programs.dconf.enable = true;
@@ -373,4 +330,7 @@
         configDir = "/home/jordan/.config/syncthing";
     };
   };
+  stylix.autoEnable = true;
+  stylix.enable = true;
+  stylix.base16Scheme = "${pkgs.base16-schemes}/share/themes/solarized-light.yaml";
 }

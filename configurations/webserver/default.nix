@@ -11,7 +11,7 @@
   boot.loader.grub.efiInstallAsRemovable = true;
   boot.loader.grub.device = "nodev";
 
-  networking.hostName = "webguest";
+  networking.hostName = "webserver";
   time.timeZone = "America/Chicago";
 
   users = {
@@ -64,7 +64,7 @@
     enable = true;
     tunnels = {
       "c0b1a694-062a-4f45-a4f6-0185afc0229a" = {
-        credentialsFile = "${config.sops.secrets.cloudflared-webguest.path}";
+        credentialsFile = "${config.sops.secrets.cloudflared-webserver.path}";
         ingress = {
           "steinke.foo" = "http://localhost:8080";
         };
@@ -73,12 +73,12 @@
     };
   };
   sops.age.sshKeyPaths = [ "/etc/ssh/ssh_host_ed25519_key" ];
-  sops.secrets = {
-    "cloudflared-webguest" = {
-      format = "binary";
-      owner = "cloudflared";
-      sopsFile = ../../secrets/webguest/cloudflared-webguest;
-    };
+#  sops.secrets = {
+#    "cloudflared" = {
+#      format = "binary";
+#      owner = "cloudflared";
+#      sopsFile = ../../secrets/webserver/cloudflared;
+#    };
   };
 
   console.colors = [

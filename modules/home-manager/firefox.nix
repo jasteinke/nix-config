@@ -3,7 +3,7 @@
 {
   programs.firefox = {
     enable = true;
-    package = pkgs.firefox-beta-bin;
+    package = pkgs.firefox-beta;
     profiles.jordan = {
       isDefault = true;
       search = {
@@ -68,6 +68,7 @@
         "security.OCSP.require" = true;
         "security.tls.version.max" = 4;
         "security.tls.version.min" = 3;
+        "sidebar.revamp" = false;
         "signon.rememberSignons" = false;
         "toolkit.legacyUserProfileCustomizations.stylesheets" = true;
         "ui.key.menuAccessKeyFocuses" = false;
@@ -88,4 +89,5 @@
       '';
     };
   };
+  stylix.targets.firefox.profileNames = [ "jordan" ];
 }

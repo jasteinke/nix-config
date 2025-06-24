@@ -2,11 +2,6 @@
   description = "Jordan Steinke's NixOS & Home-Manager config";
 
   inputs = {
-    browser-previews.url = "github:nix-community/browser-previews";
-    browser-previews.inputs.nixpkgs.follows = "nixpkgs";
-
-    catppuccin.url = "github:catppuccin/nix";
-
     disko.url = "github:nix-community/disko";
     disko.inputs.nixpkgs.follows = "nixpkgs";
 
@@ -18,63 +13,62 @@
     sops-nix.url = "github:Mic92/sops-nix";
     sops-nix.inputs.nixpkgs.follows = "nixpkgs";
 
+    stylix.url = "github:danth/stylix";
+    stylix.inputs.nixpkgs.follows = "nixpkgs";
   };
 
-  outputs = inputs@{ catppuccin, disko, home-manager, nixpkgs, ... }:{
+  outputs = inputs@{ disko, home-manager, nixpkgs, stylix, ... }:{
     nixosConfigurations = {
-      webguest = nixpkgs.lib.nixosSystem {
+      desktop-jordan = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
         specialArgs = { inherit inputs; };
         modules = [
-          ./configurations/webguest
-          home-manager.nixosModules.home-manager
-          {
-            home-manager.useGlobalPkgs = true;
-            home-manager.useUserPackages = true;
-            home-manager.users.jordan.imports = [
-              ./configurations/webguest/home.nix
-            ];
-          }
-          inputs.disko.nixosModules.disko
-          inputs.sops-nix.nixosModules.sops
-        ];
-      };
-      hybridhost = nixpkgs.lib.nixosSystem {
-        system = "x86_64-linux";
-        specialArgs = { inherit inputs; };
-        modules = [
-          catppuccin.nixosModules.catppuccin
-          ./configurations/hybridhost
+          ./configurations/desktop-jordan
           home-manager.nixosModules.home-manager
           {
             home-manager.extraSpecialArgs = { inherit inputs; };
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
             home-manager.users.jordan.imports = [
-              catppuccin.homeManagerModules.catppuccin
-              ./configurations/hybridhost/home.nix
+              ./configurations/desktop-jordan/home.nix
             ];
           }
           inputs.disko.nixosModules.disko
           inputs.sops-nix.nixosModules.sops
+          stylix.nixosModules.stylix
         ];
       };
       iso = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
         modules = [
-          catppuccin.nixosModules.catppuccin
           home-manager.nixosModules.home-manager
           {
             home-manager.extraSpecialArgs = { inherit inputs; };
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
             home-manager.users.jordan.imports = [
-              catppuccin.homeManagerModules.catppuccin
               ./configurations/iso/home.nix
             ];
           }
           ./configurations/iso
           (nixpkgs + "/nixos/modules/installer/cd-dvd/installation-cd-minimal.nix")
+        ];
+      };
+      web = nixpkgs.lib.nixosSystem {
+        system = "x86_64-linux";
+        specialArgs = { inherit inputs; };
+        modules = [
+          ./configurations/web
+          home-manager.nixosModules.home-manager
+          {
+            home-manager.useGlobalPkgs = true;
+            home-manager.useUserPackages = true;
+            home-manager.users.jordan.imports = [
+              ./configurations/web/home.nix
+            ];
+          }
+          inputs.disko.nixosModules.disko
+          inputs.sops-nix.nixosModules.sops
         ];
       };
     };

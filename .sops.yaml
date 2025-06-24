@@ -1,21 +1,14 @@
 keys:
-  - &admin_jordan age16qkxgvq8z7e3kfexkh9ezp9gqnuh3wgant0uxpu7k6m9925974dqhngj5a
-  - &server_hybridhost age1vcr2ewnrn87qr2elkhuf37z6etrqf6tnhdvs6yrgv6fstadxl3msgsfvwh
-  - &server_webguest age1pr6v2s7z4xtpcdl4cl5u5r302020auqrxs9mz0c6x39qpww9duvsnzsn6h
+  - &admin_jordan age1w8vfxkvz3e8vf3zkqm62vxa9lj9y7tykw5lgnlle9q4z07p7nstqz027e8
+  - &server_desktop-jordan age1cszaj62jydga68gstlvjp9j4tvw0gwsru9r966zm965rp8d3j44qlgyucs
 creation_rules:
-  - path_regex: secrets/webguest/([^/]+\.[^/]+|[^/]+)
-    key_groups:
-    - age:
-      - *admin_jordan
-      - *server_webguest
   - path_regex: secrets/common/([^/]+\.[^/]+|[^/]+)
     key_groups:
     - age:
       - *admin_jordan
-      - *server_hybridhost
-      - *server_webguest
-  - path_regex: secrets/hybridhost/([^/]+\.[^/]+|[^/]+)
+      - *server_desktop-jordan
+  - path_regex: secrets/desktop-jordan/([^/]+\.[^/]+|[^/]+)
     key_groups:
     - age:
       - *admin_jordan
-      - *server_hybridhost
+      - *server_desktop-jordan

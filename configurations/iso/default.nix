@@ -123,11 +123,6 @@
     pinentryPackage = pkgs.pinentry-curses;
   };
 
-  security.pki.certificateFiles = [
-    ../../certs/c622d5ed-8944-4dcd-915b-6e6f0efbc474.crt
-    ../../certs/jas.crt
-  ];
-
   # Needed for easyeffects.
   programs.dconf.enable = true;
 

@@ -2,14 +2,6 @@
 
 let
   mod = "Mod4";
-
-  rosewater = "#dc8a78";
-  peach = "#fe640b";
-  lavender = "#7287fd";
-  text = "#4c4f69";
-  overlay0 = "#9ca0b0";
-  base = "#eff1f5";
-
 in {
   xsession.windowManager.i3 = {
     enable = true;
@@ -23,9 +15,9 @@ in {
 
       keybindings = lib.mkOptionDefault {
         "${mod}+c" = "exec google-chrome-beta --kiosk https://en.wikipedia.org/wiki/Special:Random";
-        "${mod}+s" = "exec ${pkgs.dmenu}/bin/dmenu_run -nb '#eff1f5' -sf '#4c4f69' -sb '#7287fd' -nf '#4c4f69'";
+        "${mod}+s" = "exec ${pkgs.dmenu}/bin/dmenu_run -nb '#FDF6E3' -nf '#586E75' -sb '#93A1A1' -sf '#073642'";
         "${mod}+x" = "exec sh -c '${pkgs.maim}/bin/maim -s | xclip -selection clipboard -t image/png'";
-        "${mod}+Escape" = "exec sh -c '${pkgs.i3lock}/bin/i3lock -u -c 000000'";
+        "${mod}+Escape" = "exec sh -c '${pkgs.xlockmore}/bin/xlock'";
         "${mod}+Return" = "exec sh -c '${pkgs.kitty}/bin/kitty'";
 
         # Focus
@@ -60,45 +52,6 @@ in {
 
         Escape = "mode default";
       };
-      colors = {
-        focused = {
-          background = "${base}";
-          border = "${lavender}";
-          childBorder = "${lavender}";
-          text = "${text}";
-          indicator = "${rosewater}";
-        };
-        focusedInactive = {
-          background = "${base}";
-          border = "${overlay0}";
-          childBorder = "${overlay0}";
-          text = "${text}";
-          indicator = "${rosewater}";
-        };
-        unfocused = {
-          background = "${base}";
-          border = "${overlay0}";
-          childBorder = "${overlay0}";
-          text = "${text}";
-          indicator = "${rosewater}";
-        };
-        urgent = {
-          background = "${base}";
-          border = "${peach}";
-          childBorder = "${peach}";
-          text = "${peach}";
-          indicator = "${overlay0}";
-        };
-        placeholder = {
-          background = "${base}";
-          border = "${overlay0}";
-          childBorder = "${overlay0}";
-          text = "${text}";
-          indicator = "${overlay0}";
-        };
-        background = "${base}";
-      };
-
     };
   };
 }

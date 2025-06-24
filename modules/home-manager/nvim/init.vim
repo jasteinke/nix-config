@@ -35,7 +35,7 @@ nnoremap <leader>fg <cmd>Telescope live_grep<cr>
 nnoremap <leader>fb <cmd>Telescope buffers<cr>
 nnoremap <leader>fh <cmd>Telescope help_tags<cr>
 
-let g:airline_theme = 'catppuccin'
+let g:airline_theme = 'base16_solarized_light'
 " air-line
 let g:airline_powerline_fonts = 1
 

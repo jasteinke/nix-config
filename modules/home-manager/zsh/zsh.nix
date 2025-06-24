@@ -9,7 +9,7 @@
       path = "${config.xdg.dataHome}/zsh/history";
     };
 
-    initExtra = ''
+    initContent = ''
       bindkey -v
 
       bindkey -M vicmd n vi-backward-char
