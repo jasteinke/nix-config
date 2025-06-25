@@ -21,7 +21,7 @@
         "qwant".disabled = true;
       };
       server = {
-        bind_address = "127.0.0.1";
+        bind_address = "0.0.0.0";
         port = 8888;
         public_instance = false;
         secret_key = config.sops.secrets.searx.path;
