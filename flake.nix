@@ -54,6 +54,25 @@
           (nixpkgs + "/nixos/modules/installer/cd-dvd/installation-cd-minimal.nix")
         ];
       };
+      laptop-jordan = nixpkgs.lib.nixosSystem {
+        system = "x86_64-linux";
+        specialArgs = { inherit inputs; };
+        modules = [
+          ./configurations/laptop-jordan
+          home-manager.nixosModules.home-manager
+          {
+            home-manager.extraSpecialArgs = { inherit inputs; };
+            home-manager.useGlobalPkgs = true;
+            home-manager.useUserPackages = true;
+            home-manager.users.jordan.imports = [
+              ./configurations/laptop-jordan/home.nix
+            ];
+          }
+          inputs.disko.nixosModules.disko
+          inputs.sops-nix.nixosModules.sops
+          stylix.nixosModules.stylix
+        ];
+      };
       web = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
         specialArgs = { inherit inputs; };

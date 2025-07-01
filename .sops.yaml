@@ -1,12 +1,14 @@
 keys:
   - &admin_jordan age1w8vfxkvz3e8vf3zkqm62vxa9lj9y7tykw5lgnlle9q4z07p7nstqz027e8
   - &server_desktop-jordan age1cszaj62jydga68gstlvjp9j4tvw0gwsru9r966zm965rp8d3j44qlgyucs
+  - &server_laptop-jordan age176tqk6q4ts8elalvjla262akyrggmh5pzjtsl7s9ppnhzdh9440sd2h4sz
 creation_rules:
   - path_regex: secrets/common/([^/]+\.[^/]+|[^/]+)
     key_groups:
     - age:
       - *admin_jordan
       - *server_desktop-jordan
+      - *server_laptop-jordan
   - path_regex: secrets/desktop-jordan/([^/]+\.[^/]+|[^/]+)
     key_groups:
     - age:

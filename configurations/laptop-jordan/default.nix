@@ -4,11 +4,12 @@
   imports = [
     ./disk-config.nix
     ./hardware-configuration.nix
-    ../../modules/nixos/dropbox.nix
-    ../../modules/nixos/searx.nix
+    #../../modules/nixos/dropbox.nix
+    #../../modules/nixos/searx.nix
   ];
 
   boot.loader.grub.enable = true;
+  boot.loader.grub.device = "nodev";
   boot.loader.grub.efiSupport = true;
   boot.loader.grub.efiInstallAsRemovable = true;
 
@@ -28,7 +29,7 @@
 
   virtualisation.spiceUSBRedirection.enable = true;
 
-  #boot.kernelPackages = pkgs.linuxPackages_zen;
+  boot.kernelPackages = pkgs.linuxPackages_zen;
 
   networking.hostName = "laptop-jordan";
 
@@ -47,16 +48,24 @@
       fcitx5-gtk
     ];
   };
+  console.useXkbConfig = true;
+  services.xserver = {
+    xkb.layout = "us";
+    xkb.variant = "colemak_dh_iso";
+    xkb.options = "caps:swapescape,lv3:ralt_alt";
+  };
+
+
 
   services.unclutter-xfixes.enable = true;
   services.picom = {
-    backend = "glx";
+    #backend = "glx";
     enable = true;
     vSync = true;
   };
 
-  hardware.nvidia.package = config.boot.kernelPackages.nvidiaPackages.legacy_470;
-  hardware.nvidia.modesetting.enable = true;
+  #hardware.nvidia.package = config.boot.kernelPackages.nvidiaPackages.legacy_470;
+  #hardware.nvidia.modesetting.enable = true;
   hardware.graphics.enable = true;
 
   services.displayManager = {
@@ -68,7 +77,7 @@
   };
 
   services.xserver = {
-    videoDrivers = [ "nvidia" ];
+    #videoDrivers = [ "nvidia" ];
     xautolock = {
       enable = true;
       time = 60;
@@ -82,7 +91,6 @@
 
     displayManager = {
       sessionCommands = ''
-        xmodmap -e 'pointer = 3 2 1'
         xset dpms 3600 3600 3600
         xset s 3600 3600
       '';
@@ -122,11 +130,12 @@
 #    pinverification=1;
 #  };
 #
-#  security.pam.services = {
-#    i3lock.u2fAuth = true;
-#    login.u2fAuth = true;
-#    sudo.u2fAuth = true;
-#  };
+  security.pam.services = {
+    xlock.fprintAuth = true;
+    login.fprintAuth = true;
+    sudo.fprintAuth = true;
+  };
+  services.fprintd.enable = true;
 
   services.pcscd.enable = true;
 
@@ -138,11 +147,13 @@
     calibre
     clang
     clang-tools
+    claude-code
     dig
     endgame-singularity
     endless-sky
     fastfetch
     ffmpeg
+    fortune
     ghc
     ghidra-bin
     gimp
@@ -167,6 +178,7 @@
     rustc
     sops
     spotify
+    spotify-player
     steam
     tcpdump
     termdown
@@ -190,11 +202,22 @@
   networking.firewall.enable = true;
   networking.firewall.allowedTCPPorts = [ 8384 22000 ];
   networking.firewall.allowedUDPPorts = [ 22000 21027 ];
+  networking.networkmanager.enable = true;
+
+  services.tailscale.enable = true;
+  services.tailscale.extraSetFlags = [ "--exit-node=us-den-wg-101.mullvad.ts.net"];
+  services.tailscale.useRoutingFeatures ="client";
 
   # Configure carefully.
   system.stateVersion = "24.11";
 
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
+  nix.settings.substituters = [
+    "http://desktop-jordan:5000/"
+  ];
+  nix.settings.trusted-public-keys = [
+    "desktop-jordan:twqvrY5pBoHQG6dBkwUIqE5dU2dorNvXOP1jD7egj/rdaeC/28w+LXmahG4oUKhRvFcpn8SaGw7z59ASWNRIPQ=="
+  ];
 
   environment.variables.EDITOR = "nvim";
   users.defaultUserShell = pkgs.zsh;
@@ -232,7 +255,7 @@
 #          "--dbus-user.talk=org.freedesktop.Notifications"
 #        ];
 #      };
-      kiwix = {
+      kiwix-desktop = {
         executable = "${pkgs.kiwix}/bin/kiwix-desktop";
         profile = "${pkgs.firejail}/etc/firejail/kiwix-desktop.profile";
       };
@@ -335,4 +358,29 @@
         configDir = "/home/jordan/.config/syncthing";
     };
   };
+  stylix.autoEnable = true;
+  stylix.enable = true;
+  stylix.base16Scheme = "${pkgs.base16-schemes}/share/themes/solarized-light.yaml";
+  stylix.fonts = {
+    monospace = {
+      package = pkgs.nerd-fonts.hack;
+      name = "Hack Nerd Font Mono";
+    };
+    sansSerif = {
+      package = pkgs.nerd-fonts.hack;
+      name = "Hack Nerd Font";
+    };
+    serif = {
+      package = pkgs.nerd-fonts.hack;
+      name = "Hack Nerd Font";
+    };
+    sizes = {
+      applications = 16;
+      terminal = 16;
+      desktop = 16;
+      popups = 16;
+    };
+  };
+
+
 }

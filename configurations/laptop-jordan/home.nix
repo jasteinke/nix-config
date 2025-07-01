@@ -16,13 +16,6 @@
   ];
 
 
-  gtk.enable = true;
-
-  home.pointerCursor = {
-    gtk.enable = true;
-    x11.enable = true;
-    size = 24;
-  };
 
   home.file.".background-image/.png".source = builtins.fetchurl {
     name = "solarized_burst";

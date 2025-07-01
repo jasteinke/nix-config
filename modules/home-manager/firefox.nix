@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ pkgs, osConfig, ... }:
 
 {
   programs.firefox = {
@@ -9,7 +9,7 @@
       search = {
         default = "SearXNG";
         engines."SearXNG".urls = [
-          { template = "http://127.0.0.1:8888/search?q={searchTerms}"; }
+          { template = "http://desktop-jordan:8888/search?q={searchTerms}"; }
         ];
         force = true;
       };
@@ -87,6 +87,12 @@
           display: none;
         }
       '';
+      userContent = if osConfig.networking.hostName == "laptop-jordan" then ''
+        * {
+          font-family: "Hack Nerd Font" !important;
+          font-size: 18px !important;
+        }
+      '' else "";
     };
   };
   stylix.targets.firefox.profileNames = [ "jordan" ];

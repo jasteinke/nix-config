@@ -12,6 +12,7 @@
     ../../modules/home-manager/less.nix
     ../../modules/home-manager/newsboat.nix
     ../../modules/home-manager/nvim/nvim.nix
+    ../../modules/home-manager/thunderbird.nix
     ../../modules/home-manager/zsh/zsh.nix
   ];
   home.file.".background-image/.png".source = builtins.fetchurl {

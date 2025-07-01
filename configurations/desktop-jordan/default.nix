@@ -5,6 +5,7 @@
     ./disk-config.nix
     ./hardware-configuration.nix
     ../../modules/nixos/dropbox.nix
+    ../../modules/nixos/radicale.nix
     ../../modules/nixos/searx.nix
   ];
 
@@ -104,6 +105,7 @@
 
   users = {
 #    allowNoPasswordLogin = true;
+    groups.ssl.members = [ "radicale" ];
 #    mutableUsers = false;
 #    users.root.hashedPassword = "*";
     users.jordan = {
@@ -116,6 +118,10 @@
   security.sudo.extraConfig = ''
     Defaults        timestamp_timeout=60
   '';
+  
+  security.pki.certificates = [
+    (builtins.readFile ../../certs/desktop-jordan_ssl)
+  ];
 
 #  security.pam.u2f.settings = {
 #    authfile = "/run/secrets/u2f_keys";
@@ -139,6 +145,7 @@
     calibre
     clang
     clang-tools
+    claude-code
     dig
     endgame-singularity
     endless-sky
@@ -190,12 +197,14 @@
 
   #services.cloudflare-warp.enable = true;
   networking.firewall.enable = true;
-  networking.firewall.allowedTCPPorts = [ 8384 22000 ];
+  networking.firewall.allowedTCPPorts = [ 8384 22000 5000 ];
   networking.firewall.allowedUDPPorts = [ 22000 21027 ];
   services.snowflake-proxy.enable = true;
   services.tailscale.enable = true;
   services.tailscale.extraSetFlags = [ "--exit-node=us-den-wg-101.mullvad.ts.net"];
   services.tailscale.useRoutingFeatures ="client";
+
+  services.openssh.enable = true;
 
   # Configure carefully.
   system.stateVersion = "24.11";
@@ -296,11 +305,27 @@
       owner = "jordan";
       sopsFile = ../../secrets/common/borgbackup-ssh;
     };
+    "binary-cache" = {
+      format = "binary";
+      owner = "jordan";
+      sopsFile = ../../secrets/desktop-jordan/binary-cache;
+    };
 #    "cloudflare-warp" = {
 #      format = "binary";
 #      path = "/var/lib/cloudflare-warp/mdm.xml";
 #      sopsFile = ../../secrets/common/cloudflare-warp;
 #    };
+    "desktop-jordan_ssl" = {
+      format = "binary";
+      group = "ssl";
+      mode = "640";
+      sopsFile = ../../secrets/desktop-jordan/ssl;
+    };
+    "radicale-passwd" = {
+      format = "binary";
+      sopsFile = ../../secrets/desktop-jordan/radicale-passwd;
+      owner = "radicale";
+    };
     "searx" = {
       format = "binary";
       sopsFile = ../../secrets/desktop-jordan/searx;
@@ -324,6 +349,12 @@
   nix.optimise.dates = [ "03:45" ];
 
   services = {
+    nix-serve = {
+      enable = true;
+      bindAddress = "0.0.0.0";
+      port = 5000;
+      secretKeyFile = "/run/secrets/binary-cache";
+    };
     syncthing = {
         enable = true;
         user = "jordan";

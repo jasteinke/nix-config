@@ -1,7 +1,7 @@
-{ config, inputs, lib, pkgs, ... }:
+{ config, inputs, lib, pkgs, osConfig, ... }:
 
 let
-  mod = "Mod4";
+  mod = "Mod1";
 in {
   xsession.windowManager.i3 = {
     enable = true;
@@ -15,9 +15,10 @@ in {
 
       keybindings = lib.mkOptionDefault {
         "${mod}+c" = "exec google-chrome-beta --kiosk https://en.wikipedia.org/wiki/Special:Random";
-        "${mod}+s" = "exec ${pkgs.dmenu}/bin/dmenu_run -nb '#FDF6E3' -nf '#586E75' -sb '#93A1A1' -sf '#073642'";
+        "${mod}+s" = "exec ${pkgs.dmenu}/bin/dmenu_run -nb '#FDF6E3' -nf '#586E75' -sb '#93A1A1' -sf '#073642'${if osConfig.networking.hostName == "laptop-jordan" then " -fn 'Hack Nerd Font:size=16'" else ""}";
         "${mod}+x" = "exec sh -c '${pkgs.maim}/bin/maim -s | xclip -selection clipboard -t image/png'";
         "${mod}+Escape" = "exec sh -c '${pkgs.xlockmore}/bin/xlock'";
+        "${mod}+Shift+Escape" = "exec sh -c '${pkgs.xlockmore}/bin/xlock & systemctl suspend'";
         "${mod}+Return" = "exec sh -c '${pkgs.kitty}/bin/kitty'";
 
         # Focus

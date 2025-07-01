@@ -3,14 +3,10 @@
     disk = {
       disk0 = {
         type = "disk";
-        device = "/dev/disk/by-id/ata-HUS724020ALA640_P5GMH0WX";
+        device = "/dev/disk/by-id/nvme-WD_BLACK_SN770_1TB_242809801134";
         content = {
           type = "gpt";
           partitions = {
-            boot = {
-              size = "1M";
-              type = "EF02";
-            };
             ESP = {
               size = "4096M";
               type = "EF00";

@@ -24,12 +24,13 @@
 
     shellAliases = {
       c = "cd";
-      cn = "cd ~/Dropbox/nix-config";
+      cn = "cd ~/syncthing/nix-config";
       b = "btop";
       n = "newsboat";
       nbi = "nix build .#nixosConfigurations.iso.config.system.build.isoImage";
       nz = ''cd /home/jordan/zettelkasten; ts=$(date -u +%Y%m%d%H%M%S); echo "# $ts.md" >> "$ts.md"; nvim $ts.md'';
       t = "tree";
+      tws = "tws() { timew start \"$1\"; sleep \"$2\"; timew stop; mplayer /home/jordan/Music/levelup.mp3; }; tws";
       v = "nvim";
       z = "cd /home/jordan/zettelkasten; nvim";
     };
