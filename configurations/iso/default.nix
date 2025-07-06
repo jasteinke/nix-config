@@ -1,13 +1,13 @@
 { pkgs, ... }:
 
 {
+  imports = [
+    ../../modules/nixos/common.nix
+    ../../modules/nixos/gui.nix
+  ];
+
   networking.hostName = "iso";
 
-  time.timeZone = "America/Chicago";
-
-  fonts.packages = with pkgs; [
-    nerd-fonts.hack
-  ];
 
   services.unclutter-xfixes.enable = true;
   services.picom = {
@@ -95,36 +95,11 @@
     yubioath-flutter
   ];
 
-  nixpkgs.config.allowUnfree = true;
-
-  networking.firewall.enable = true;
   services.cloudflare-warp.enable = true;
 
   # Configure carefully.
-  system.stateVersion = "24.11";
-
-  nix.settings.experimental-features = [ "nix-command" "flakes" ];
-
-  environment.variables.EDITOR = "nvim";
-  users.defaultUserShell = pkgs.zsh;
-  programs.zsh.enable = true;
-
-  location= {
-    latitude = 41.25;
-    longitude = -96.0;
-    provider = "manual";
-  };
 
 
-  services.redshift.enable = true;
-
-  programs.gnupg.agent = {
-    enable = true;
-    pinentryPackage = pkgs.pinentry-curses;
-  };
-
-  # Needed for easyeffects.
-  programs.dconf.enable = true;
 
   console.colors = [
     "eeeeee"

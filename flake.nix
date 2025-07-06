@@ -17,77 +17,37 @@
     stylix.inputs.nixpkgs.follows = "nixpkgs";
   };
 
-  outputs = inputs@{ disko, home-manager, nixpkgs, stylix, ... }:{
+  outputs = inputs@{ disko, home-manager, nixpkgs, stylix, ... }:
+  let
+    mkHost = { hostName, extraModules ? [], useStylix ? true }:
+      nixpkgs.lib.nixosSystem {
+        system = "x86_64-linux";
+        specialArgs = { inherit inputs; };
+        modules = [
+          ./configurations/${hostName}
+          home-manager.nixosModules.home-manager
+          {
+            home-manager.extraSpecialArgs = { inherit inputs; };
+            home-manager.useGlobalPkgs = true;
+            home-manager.useUserPackages = true;
+            home-manager.users.jordan.imports = [
+              ./configurations/${hostName}/home.nix
+            ];
+          }
+          inputs.disko.nixosModules.disko
+          inputs.sops-nix.nixosModules.sops
+        ] ++ nixpkgs.lib.optionals useStylix [ stylix.nixosModules.stylix ]
+          ++ extraModules;
+      };
+  in {
     nixosConfigurations = {
-      desktop-jordan = nixpkgs.lib.nixosSystem {
-        system = "x86_64-linux";
-        specialArgs = { inherit inputs; };
-        modules = [
-          ./configurations/desktop-jordan
-          home-manager.nixosModules.home-manager
-          {
-            home-manager.extraSpecialArgs = { inherit inputs; };
-            home-manager.useGlobalPkgs = true;
-            home-manager.useUserPackages = true;
-            home-manager.users.jordan.imports = [
-              ./configurations/desktop-jordan/home.nix
-            ];
-          }
-          inputs.disko.nixosModules.disko
-          inputs.sops-nix.nixosModules.sops
-          stylix.nixosModules.stylix
-        ];
-      };
-      iso = nixpkgs.lib.nixosSystem {
-        system = "x86_64-linux";
-        modules = [
-          home-manager.nixosModules.home-manager
-          {
-            home-manager.extraSpecialArgs = { inherit inputs; };
-            home-manager.useGlobalPkgs = true;
-            home-manager.useUserPackages = true;
-            home-manager.users.jordan.imports = [
-              ./configurations/iso/home.nix
-            ];
-          }
-          ./configurations/iso
+      desktop-jordan = mkHost { hostName = "desktop-jordan"; };
+      laptop-jordan = mkHost { hostName = "laptop-jordan"; };
+      webserver = mkHost { hostName = "webserver"; useStylix = false; };
+      iso = mkHost {
+        hostName = "iso";
+        extraModules = [
           (nixpkgs + "/nixos/modules/installer/cd-dvd/installation-cd-minimal.nix")
-        ];
-      };
-      laptop-jordan = nixpkgs.lib.nixosSystem {
-        system = "x86_64-linux";
-        specialArgs = { inherit inputs; };
-        modules = [
-          ./configurations/laptop-jordan
-          home-manager.nixosModules.home-manager
-          {
-            home-manager.extraSpecialArgs = { inherit inputs; };
-            home-manager.useGlobalPkgs = true;
-            home-manager.useUserPackages = true;
-            home-manager.users.jordan.imports = [
-              ./configurations/laptop-jordan/home.nix
-            ];
-          }
-          inputs.disko.nixosModules.disko
-          inputs.sops-nix.nixosModules.sops
-          stylix.nixosModules.stylix
-        ];
-      };
-      web = nixpkgs.lib.nixosSystem {
-        system = "x86_64-linux";
-        specialArgs = { inherit inputs; };
-        modules = [
-          ./configurations/web
-          home-manager.nixosModules.home-manager
-          {
-            home-manager.useGlobalPkgs = true;
-            home-manager.useUserPackages = true;
-            home-manager.users.jordan.imports = [
-              ./configurations/web/home.nix
-            ];
-          }
-          inputs.disko.nixosModules.disko
-          inputs.sops-nix.nixosModules.sops
         ];
       };
     };

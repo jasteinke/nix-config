@@ -4,6 +4,9 @@
   imports = [
     ./disk-config.nix
     ./hardware-configuration.nix
+    ../../modules/nixos/common.nix
+    ../../modules/nixos/gui.nix
+    ../../modules/nixos/japanese.nix
     #../../modules/nixos/dropbox.nix
     #../../modules/nixos/searx.nix
   ];
@@ -33,12 +36,6 @@
 
   networking.hostName = "laptop-jordan";
 
-  time.timeZone = "America/Chicago";
-
-  fonts.packages = with pkgs; [
-    ipafont
-    nerd-fonts.hack
-  ];
 
   i18n.inputMethod = {
     type = "fcitx5";
@@ -143,6 +140,7 @@
 
   environment.systemPackages = with pkgs; [
     age
+    #amazon-q-cli
     anki-bin
     calibre
     clang
@@ -154,6 +152,7 @@
     fastfetch
     ffmpeg
     fortune
+    #gemini-cli
     ghc
     ghidra-bin
     gimp
@@ -195,42 +194,25 @@
     yubioath-flutter
   ];
 
-  nixpkgs.config.allowUnfree = true;
   nixpkgs.config.nvidia.acceptLicense = true;
 
   #services.cloudflare-warp.enable = true;
-  networking.firewall.enable = true;
   networking.firewall.allowedTCPPorts = [ 8384 22000 ];
   networking.firewall.allowedUDPPorts = [ 22000 21027 ];
   networking.networkmanager.enable = true;
 
   services.tailscale.enable = true;
-  services.tailscale.extraSetFlags = [ "--exit-node=us-den-wg-101.mullvad.ts.net"];
-  services.tailscale.useRoutingFeatures ="client";
+  #services.tailscale.extraSetFlags = [ "--exit-node=us-den-wg-101.mullvad.ts.net"];
+  #services.tailscale.useRoutingFeatures ="client";
 
   # Configure carefully.
-  system.stateVersion = "24.11";
+#  nix.settings.substituters = [
+#    "http://desktop-jordan:5000/"
+#  ];
+#  nix.settings.trusted-public-keys = [
+#    "desktop-jordan:vV9ZOe7LigVpaKv/w0EksTYdsE2WbgxwHuXOWtM2Yfw="
+#  ];
 
-  nix.settings.experimental-features = [ "nix-command" "flakes" ];
-  nix.settings.substituters = [
-    "http://desktop-jordan:5000/"
-  ];
-  nix.settings.trusted-public-keys = [
-    "desktop-jordan:twqvrY5pBoHQG6dBkwUIqE5dU2dorNvXOP1jD7egj/rdaeC/28w+LXmahG4oUKhRvFcpn8SaGw7z59ASWNRIPQ=="
-  ];
-
-  environment.variables.EDITOR = "nvim";
-  users.defaultUserShell = pkgs.zsh;
-  programs.zsh.enable = true;
-
-
-  location= {
-    latitude = 41.25;
-    longitude = -96.0;
-    provider = "manual";
-  };
-
-  services.redshift.enable = true;
 
   programs.firejail = {
     enable = true;
@@ -315,10 +297,6 @@
 #    };
 #  };
 
-  programs.gnupg.agent = {
-    enable = true;
-    pinentryPackage = pkgs.pinentry-curses;
-  };
 
   sops.age.sshKeyPaths = [ "/etc/ssh/ssh_host_ed25519_key" ];
   sops.secrets = {
@@ -339,8 +317,6 @@
 #    };
   };
 
-  # Needed for easyeffects.
-  programs.dconf.enable = true;
 
   nix.gc = {
     automatic = true;

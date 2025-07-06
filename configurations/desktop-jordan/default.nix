@@ -4,6 +4,9 @@
   imports = [
     ./disk-config.nix
     ./hardware-configuration.nix
+    ../../modules/nixos/common.nix
+    ../../modules/nixos/gui.nix
+    ../../modules/nixos/japanese.nix
     ../../modules/nixos/dropbox.nix
     ../../modules/nixos/radicale.nix
     ../../modules/nixos/searx.nix
@@ -33,29 +36,8 @@
 
   networking.hostName = "desktop-jordan";
 
-  time.timeZone = "America/Chicago";
 
-  fonts.packages = with pkgs; [
-    inter-alia
-    ipafont
-    nerd-fonts.hack
-  ];
-
-  i18n.inputMethod = {
-    type = "fcitx5";
-    enable = true;
-    fcitx5.addons = with pkgs; [
-      fcitx5-mozc
-      fcitx5-gtk
-    ];
-  };
-
-  services.unclutter-xfixes.enable = true;
-  services.picom = {
-    backend = "glx";
-    enable = true;
-    vSync = true;
-  };
+  services.picom.backend = "glx";
 
   hardware.nvidia.package = config.boot.kernelPackages.nvidiaPackages.legacy_470;
   hardware.nvidia.modesetting.enable = true;
@@ -141,6 +123,7 @@
 
   environment.systemPackages = with pkgs; [
     age
+    amazon-q-cli
     anki-bin
     calibre
     clang
@@ -152,6 +135,7 @@
     fastfetch
     ffmpeg
     fortune
+    gemini-cli
     ghc
     ghidra-bin
     gimp
@@ -192,37 +176,20 @@
     yubioath-flutter
   ];
 
-  nixpkgs.config.allowUnfree = true;
   nixpkgs.config.nvidia.acceptLicense = true;
 
   #services.cloudflare-warp.enable = true;
-  networking.firewall.enable = true;
   networking.firewall.allowedTCPPorts = [ 8384 22000 5000 ];
   networking.firewall.allowedUDPPorts = [ 22000 21027 ];
   services.snowflake-proxy.enable = true;
   services.tailscale.enable = true;
-  services.tailscale.extraSetFlags = [ "--exit-node=us-den-wg-101.mullvad.ts.net"];
-  services.tailscale.useRoutingFeatures ="client";
+  #services.tailscale.extraSetFlags = [ "--exit-node=us-den-wg-101.mullvad.ts.net"];
+  #services.tailscale.useRoutingFeatures ="client";
 
   services.openssh.enable = true;
 
   # Configure carefully.
-  system.stateVersion = "24.11";
-
-  nix.settings.experimental-features = [ "nix-command" "flakes" ];
   nix.settings.download-buffer-size = 524288000;
-
-  environment.variables.EDITOR = "nvim";
-  users.defaultUserShell = pkgs.zsh;
-  programs.zsh.enable = true;
-
-  location= {
-    latitude = 41.25;
-    longitude = -96.0;
-    provider = "manual";
-  };
-
-  services.redshift.enable = true;
 
   programs.firejail = {
     enable = true;
@@ -288,10 +255,6 @@
     };
   };
 
-  programs.gnupg.agent = {
-    enable = true;
-    pinentryPackage = pkgs.pinentry-curses;
-  };
 
   sops.age.sshKeyPaths = [ "/etc/ssh/ssh_host_ed25519_key" ];
   sops.secrets = {
@@ -337,8 +300,6 @@
 #    };
   };
 
-  # Needed for easyeffects.
-  programs.dconf.enable = true;
 
   nix.gc = {
     automatic = true;
@@ -362,7 +323,4 @@
         configDir = "/home/jordan/.config/syncthing";
     };
   };
-  stylix.autoEnable = true;
-  stylix.enable = true;
-  stylix.base16Scheme = "${pkgs.base16-schemes}/share/themes/solarized-light.yaml";
 }
